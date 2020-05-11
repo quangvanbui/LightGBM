@@ -323,12 +323,14 @@ void SerialTreeLearner::FindBestSplits() {
     is_feature_used[feature_index] = 1;
   }
   bool use_subtract = parent_leaf_histogram_array_ != nullptr;
+  use_subtract = false;
   ConstructHistograms(is_feature_used, use_subtract);
   FindBestSplitsFromHistograms(is_feature_used, use_subtract);
 }
 
 void SerialTreeLearner::ConstructHistograms(
     const std::vector<int8_t>& is_feature_used, bool use_subtract) {
+  use_subtract = false;
   Common::FunctionTimer fun_timer("SerialTreeLearner::ConstructHistograms",
                                   global_timer);
   // construct smaller leaf
