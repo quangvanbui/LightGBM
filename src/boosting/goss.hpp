@@ -100,7 +100,7 @@ class GOSS: public GBDT {
         size_t idx = static_cast<size_t>(cur_tree_id) * num_data_ + cur_idx;
         grad += std::fabs(gradients_[idx] * hessians_[idx]);
       }
-      if (grad >= threshold) {
+      if (grad >= threshold && big_weight_cnt < top_k) {
         buffer[cur_left_cnt++] = cur_idx;
         ++big_weight_cnt;
       } else {
