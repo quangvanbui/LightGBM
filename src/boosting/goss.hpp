@@ -88,11 +88,11 @@ class GOSS: public GBDT {
     top_k = std::max(1, top_k);
     ArrayArgs<score_t>::ArgMaxAtK(&tmp_gradients, 0, static_cast<int>(tmp_gradients.size()), top_k - 1);
     score_t threshold = tmp_gradients[top_k - 1];
-
     score_t multiply = static_cast<score_t>(cnt - top_k) / other_k;
     data_size_t cur_left_cnt = 0;
     data_size_t cur_right_pos = cnt;
     data_size_t big_weight_cnt = 0;
+    Log::Info("threshold %f, multiply %f", threshold, multiply);
     for (data_size_t i = 0; i < cnt; ++i) {
       auto cur_idx = start + i;
       score_t grad = 0.0f;
@@ -120,6 +120,7 @@ class GOSS: public GBDT {
         }
       }
     }
+    Log::Info("big_weight_cnt %d, left_cnt %d, total_cnt", big_weight_cnt, cur_left_cnt, cnt);
     return cur_left_cnt;
   }
 
@@ -131,9 +132,7 @@ class GOSS: public GBDT {
         num_data_,
         [=](int, data_size_t cur_start, data_size_t cur_cnt, data_size_t* left,
             data_size_t*) {
-          data_size_t cur_left_count = 0;
-          cur_left_count = BaggingHelper(cur_start, cur_cnt, left);
-          return cur_left_count;
+          return BaggingHelper(cur_start, cur_cnt, left);
         },
         bag_data_indices_.data());
     bag_data_cnt_ = left_cnt;
